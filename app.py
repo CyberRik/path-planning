@@ -6,6 +6,7 @@ import time
 from rrt_utils import Environment
 from rrt_variants import rrt_basic, rrt_with_spacing, rrt_greedy, smooth_path
 from visualizations import plot_environment, plot_comparison_path
+import seaborn as sns
 
 width, height = 100, 100
 
@@ -34,50 +35,50 @@ def run_benchmark(rrt_function, env, num_runs=1000, smooth=False, **kwargs):
 
     return success_rate, avg_length, avg_time, node_counts
 
-
 st.title("RRT Algorithm Visualizer and Benchmarking")
 
-# Sidebar for environment setup
 st.sidebar.header("Environment Setup")
 
 start = st.sidebar.text_input("Start position (x, y)", "(10, 10)")
 goal = st.sidebar.text_input("Goal position (x, y)", "(90, 90)")
 
-start = tuple(map(int, start.strip("()").split(",")))
-goal = tuple(map(int, goal.strip("()").split(",")))
+try:
+    start = tuple(map(int, start.strip("()").split(",")))
+    goal = tuple(map(int, goal.strip("()").split(",")))
+except ValueError:
+    st.error("Invalid start or goal coordinates. Please enter in (x, y) format.")
 
-# Slider for obstacle size
 obstacle_size = st.sidebar.slider("Obstacle Size", min_value=5, max_value=30, value=10)
 
-# Add input for obstacles (allow user to input only the bottom-left corner)
 st.sidebar.subheader("Add Obstacles")
 obstacles_input = st.sidebar.text_area("Enter bottom-left point of obstacles (e.g., [(x1, y1), ...])", 
                                       "[((20, 20)), ((50, 50)), ((70, 20)), ((20, 70))]")
 
 try:
-    bottom_left_points = eval(obstacles_input)  # Convert the input string to a list of tuples
+    bottom_left_points = eval(obstacles_input)  
     obstacles = [((x1, y1), (x1 + obstacle_size, y1 + obstacle_size)) for (x1, y1) in bottom_left_points]
 except:
     obstacles = []
 
-# Set the environment with the user-defined obstacles
 env = Environment(100, 100, obstacles)
 
-# Default plot of environment with obstacles
 st.subheader("Current Environment with Obstacles")
 fig, ax = plt.subplots()
 plot_environment(start, goal, obstacles, ax=ax, title="Environment with Movable Obstacles")
 st.pyplot(fig)
 
-# Dropdown for selecting the algorithm
 algorithm = st.sidebar.selectbox("Choose RRT Algorithm", ["Basic RRT", "Spacing-aware RRT", "Greedy RRT"])
 st.sidebar.write(f"Selected Algorithm: {algorithm}")
 
+algo_map = {
+    "Basic RRT": rrt_basic,
+    "Spacing-aware RRT": rrt_with_spacing,
+    "Greedy RRT": rrt_greedy
+}
 
-
-# Button to plot the selected algorithm's path
 if st.sidebar.button("Plot Algorithm Path"):
-    # Update the environment and run the selected algorithm
+    selected_algo_func = algo_map[algorithm]
+    
     if algorithm == "Basic RRT":
         unsmoothed_path = rrt_basic(start, goal, env)
         smoothed_path = smooth_path(unsmoothed_path, env)
@@ -101,16 +102,15 @@ if st.sidebar.button("Plot Algorithm Path"):
         plot_comparison_path(start, goal, obstacles, unsmoothed_path_greedy, smoothed_path_greedy, ax=ax, title="Greedy RRT Path")
         st.pyplot(fig)
 
-# Slider for the number of benchmark runs before the button
 num_runs = st.sidebar.slider("Number of Runs", min_value=10, max_value=1000, value=100)
 
-# Button to run the benchmark
 if st.sidebar.button("Run Benchmark"):
-    success_rate, avg_length, avg_time, node_counts = run_benchmark(rrt_basic, env, num_runs)
+    selected_algo_func = algo_map[algorithm]
+    success_rate, avg_length, avg_time, node_counts = run_benchmark(selected_algo_func, env, num_runs)
     
     st.subheader("Benchmark Results")
     df = pd.DataFrame({
-        'Algorithm': ['Basic RRT'],
+        'Algorithm': [algorithm],
         'Success Rate': [success_rate],
         'Average Path Length': [avg_length],
         'Average Planning Time': [avg_time],
@@ -119,4 +119,7 @@ if st.sidebar.button("Run Benchmark"):
 
     st.write(df)
 
-    df.to_csv("benchmark_results.csv", index=False)
+    st.download_button("Download CSV", df.to_csv(index=False), "benchmark_results.csv", "text/csv")
+
+if st.sidebar.button("Reset Environment"):
+    st.stop()
