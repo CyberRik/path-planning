@@ -2,7 +2,7 @@
 import random
 import matplotlib.pyplot as plt
 from rrt_variants import rrt_basic, rrt_with_spacing, rrt_greedy, smooth_path
-from visualizations import plot_environment
+from visualizations import plot_environment, plot_comparison_path
 from rrt_utils import Environment
 
 # Define environment parameters
@@ -20,17 +20,22 @@ goal = (90, 90)
 env = Environment(width, height, obstacles)
 
 # Run Basic RRT
-path_basic = rrt_basic(start, goal, env)
-plot_environment(start, goal, obstacles, path_basic, "Basic RRT Path")
+unsmoothed_path = rrt_basic(start, goal, env)
+smoothed_path = smooth_path(unsmoothed_path, env)
+
+# Plot both paths
+plot_comparison_path(start, goal, obstacles, unsmoothed_path, smoothed_path, title="Smoothed vs Unsmoothed Path")
 
 # Run Spacing-aware RRT (with additional spacing parameter)
 path_spacing = rrt_with_spacing(start, goal, env, spacing=5)
 plot_environment(start, goal, obstacles, path_spacing, "Spacing-aware RRT Path")
 
-# Run Greedy RRT (with goal bias parameter)
-path_greedy = rrt_greedy(start, goal, env, goal_bias=0.2)
-plot_environment(start, goal, obstacles, path_greedy, "Greedy RRT Path")
+# Run Greedy RRT (unsmoothed)
+unsmoothed_path_greedy = rrt_greedy(start, goal, env, goal_bias=0.2)
 
-# Optional: Run Smoothed Path (for Basic RRT example)
-path_smoothed = smooth_path(path_basic, env)
-plot_environment(start, goal, obstacles, path_smoothed, "Smoothed Basic RRT Path")
+# Run Path Smoothing (smoothed)
+smoothed_path_greedy = smooth_path(unsmoothed_path_greedy, env)
+
+# Plot both paths
+plot_comparison_path(start, goal, obstacles, unsmoothed_path_greedy, smoothed_path_greedy, title="Greedy RRT: Smoothed vs Unsmoothed Path")
+
