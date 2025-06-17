@@ -1,4 +1,3 @@
-# rrt_utils.py
 import numpy as np
 import math
 
