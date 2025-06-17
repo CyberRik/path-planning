@@ -123,3 +123,6 @@ if st.sidebar.button("Run Benchmark"):
 
 if st.sidebar.button("Reset Environment"):
     st.stop()
+
+
+st.write("Made with ❤️ by [CyberRik]")
