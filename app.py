@@ -55,33 +55,31 @@ initial_obstacles = [
     ((20, 70), (30, 80))
 ]
 
-def update_obstacles_from_canvas(canvas_result):
-    obstacles = []
-    for shape in canvas_result.objects:
-        if shape['type'] == 'rect':
-            ox1, oy1 = shape['left'], shape['top']
-            ox2, oy2 = ox1 + shape['width'], oy1 + shape['height']
-            obstacles.append(((ox1, oy1), (ox2, oy2)))
-    return obstacles
+# def update_obstacles_from_canvas(canvas_result):
+#     obstacles = []
+#     for shape in canvas_result.objects:
+#         if shape['type'] == 'rect':
+#             ox1, oy1 = shape['left'], shape['top']
+#             ox2, oy2 = ox1 + shape['width'], oy1 + shape['height']
+#             obstacles.append(((ox1, oy1), (ox2, oy2)))
+#     return obstacles
 
-canvas = st_canvas(
-    width=500,
-    height=500,
-    stroke_width=2,
-    stroke_color="blue",
-    background_color="white",
-    drawing_mode="rect",
-    initial_drawing_objects=[{
-        'type': 'rect', 'left': ox1, 'top': oy1, 'width': ox2 - ox1, 'height': oy2 - oy1, 
-        'stroke': 'blue', 'fill': 'rgba(0, 0, 255, 0.3)', 'key': f'obj_{i}'
-    } for i, ((ox1, oy1), (ox2, oy2)) in enumerate(initial_obstacles)],
-    key="canvas"
-)
+# canvas = st_canvas(
+#     width=500,
+#     height=500,
+#     stroke_width=2,
+#     stroke_color="blue",
+#     background_color="white",
+#     drawing_mode="rect",
+#     initial_drawing_objects=[{
+#         'type': 'rect', 'left': ox1, 'top': oy1, 'width': ox2 - ox1, 'height': oy2 - oy1, 
+#         'stroke': 'blue', 'fill': 'rgba(0, 0, 255, 0.3)', 'key': f'obj_{i}'
+#     } for i, ((ox1, oy1), (ox2, oy2)) in enumerate(initial_obstacles)],
+#     key="canvas"
+# )
 
-if canvas.json_data is not None:
-    updated_obstacles = update_obstacles_from_canvas(canvas.json_data)
-else:
-    updated_obstacles = initial_obstacles 
+
+updated_obstacles = initial_obstacles 
 
 env = Environment(100, 100, updated_obstacles)
 st.subheader("Current Environment with Obstacles")
@@ -96,26 +94,23 @@ if algorithm == "Basic RRT":
     unsmoothed_path = rrt_basic(start, goal, env)
     smoothed_path = smooth_path(unsmoothed_path, env)
     st.subheader("Basic RRT Path")
-    plot_comparison_path(start, goal, obstacles, unsmoothed_path, smoothed_path, title="Basic RRT Path")
     fig, ax = plt.subplots()
-    plot_comparison_path(start, goal, obstacles, unsmoothed_path, smoothed_path, ax=ax, title="Basic RRT Path")
+    plot_comparison_path(start, goal, updated_obstacles, unsmoothed_path, smoothed_path, ax=ax, title="Basic RRT Path")
     st.pyplot(fig)
 
 elif algorithm == "Spacing-aware RRT":
     path_spacing = rrt_with_spacing(start, goal, env, spacing=5)
     st.subheader("Spacing-aware RRT Path")
-    plot_environment(start, goal, obstacles, path_spacing, title="Spacing-aware RRT Path")
     fig, ax = plt.subplots()
-    plot_comparison_path(start, goal, obstacles, path_spacing, ax=ax, title="Spacing-aware RRT Path")
+    plot_environment(start, goal, updated_obstacles, path_spacing, ax=ax, title="Spacing-aware RRT Path")
     st.pyplot(fig)
 
 elif algorithm == "Greedy RRT":
     unsmoothed_path_greedy = rrt_greedy(start, goal, env, goal_bias=0.2)
     smoothed_path_greedy = smooth_path(unsmoothed_path_greedy, env)
     st.subheader("Greedy RRT Path")
-    plot_comparison_path(start, goal, obstacles, unsmoothed_path_greedy, smoothed_path_greedy, title="Greedy RRT Path")
     fig, ax = plt.subplots()
-    plot_comparison_path(start, goal, obstacles, unsmoothed_path_greedy, smoothed_path_greedy, ax=ax, title="Spacing-aware RRT Path")
+    plot_comparison_path(start, goal, updated_obstacles, unsmoothed_path_greedy, smoothed_path_greedy, ax=ax, title="Spacing-aware RRT Path")
     st.pyplot(fig)
 
 if st.sidebar.button("Run Benchmark"):

@@ -1,2 +1,2 @@
 Algorithm,Success Rate,Average Path Length,Average Planning Time,Average Node Count
-Basic RRT,1.0,17.23,0.004459466934204102,17.23
+Basic RRT,1.0,17.55,0.009115967750549316,17.55
