@@ -123,4 +123,13 @@ if st.sidebar.button("Run Benchmark"):
 if st.sidebar.button("Reset Environment"):
     st.stop()
 
+st.markdown(
+    """
+    <div style="display: flex; margin-top: 50px;">
+        <a href="https://github.com/CyberRik/path-planning" target="_blank">
+            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" width="50"/>
+        </a>
+    </div>
+    """, unsafe_allow_html=True
+)
 st.write("Made with ❤️ by [CyberRik]")
