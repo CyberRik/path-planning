@@ -1,4 +1,3 @@
-import random
 import matplotlib.pyplot as plt
 import streamlit as st
 import numpy as np
@@ -7,7 +6,6 @@ import time
 from rrt_utils import Environment
 from rrt_variants import rrt_basic, rrt_with_spacing, rrt_greedy, smooth_path
 from visualizations import plot_environment, plot_comparison_path
-from streamlit_drawable_canvas import st_canvas
 
 width, height = 100, 100
 
