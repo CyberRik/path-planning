@@ -24,14 +24,12 @@ class Environment:
         self.obstacles = obstacles
 
     def is_collision_free(self, node1, node2):
-        # Check if the path between two nodes collides with obstacles
         for (ox1, oy1), (ox2, oy2) in self.obstacles:
             if line_intersects_rect(node1.x, node1.y, node2.x, node2.y, ox1, oy1, ox2, oy2):
                 return False
         return True
 
 def line_intersects_rect(x1, y1, x2, y2, rx1, ry1, rx2, ry2):
-    # Implementing Cohen-Sutherland line clipping algorithm
     INSIDE, LEFT, RIGHT, BOTTOM, TOP = 0, 1, 2, 4, 8
     def compute_out_code(x, y):
         code = INSIDE

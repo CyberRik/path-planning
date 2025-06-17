@@ -90,14 +90,13 @@ def rrt_greedy(start, goal, environment, max_distance=10, goal_tolerance=5, goal
     return path[::-1]
 
 def smooth_path(path, environment):
-    smoothed_path = [path[0]]  # Start with the first node
+    smoothed_path = [path[0]] 
 
     i = 0
     while i < len(path) - 1:
         for j in range(len(path) - 1, i, -1):
-            # Check if the path between node[i] and node[j] is free of obstacles
             if environment.is_collision_free(Node(path[i][0], path[i][1]), Node(path[j][0], path[j][1])):
                 smoothed_path.append(path[j])
                 i = j
-                break  # Skip intermediate nodes and move on
+                break  
     return smoothed_path
