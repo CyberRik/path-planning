@@ -6,7 +6,6 @@ import time
 from rrt_utils import Environment
 from rrt_variants import rrt_basic, rrt_with_spacing, rrt_greedy, smooth_path
 from visualizations import plot_environment, plot_comparison_path
-import seaborn as sns
 
 width, height = 100, 100
 
