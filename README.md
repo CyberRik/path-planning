@@ -14,14 +14,9 @@ This project implements various variants of the Rapidly-Exploring Random Tree (R
 
 ## Environment Setup
 
-The environment is defined as a 100x100 grid with four fixed rectangular obstacles:
+The environment is defined as a 100x100 grid with modifiable rectangular obstacles:
 
-- **Obstacle 1**: Coordinates `((20, 20), (30, 30))`
-- **Obstacle 2**: Coordinates `((50, 50), (60, 60))`
-- **Obstacle 3**: Coordinates `((70, 20), (80, 30))`
-- **Obstacle 4**: Coordinates `((20, 70), (30, 80))`
-
-### Start and Goal Points
+### Start and Goal Points (modifiable)
 - **Start**: (10, 10)
 - **Goal**: (90, 90)
 
